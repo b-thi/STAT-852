@@ -98,15 +98,17 @@ LASSO_func <- function(seed_picked){
                                     MSPE.lasso_2_1se))
   
   return(list(results = df_a, 
-              coef_model1 = coef(cv.lasso.1), 
-              coef_model2 = coef(cv.lasso.2)))
+              coef_model1_min = coef(cv.lasso.1, s = cv.lasso.1$lambda.min), 
+              coef_model2_min = coef(cv.lasso.2, s = cv.lasso.1$lambda.min),
+              coef_model1_1se = coef(cv.lasso.1, s = cv.lasso.1$lambda.1se), 
+              coef_model2_1se = coef(cv.lasso.2, s = cv.lasso.1$lambda.1se)))
 }
 
 # Part (a) and (b)
 LASSO_func(120401002)
 
 ##### Question 2 #####
-
+# On the written part #
 
 ##### Question 3 #####
 LASSO_func(9267926)
@@ -430,20 +432,19 @@ for (i in 1:R) {
   MSPE[i,] <- temp$MSPE
 }
 
-sMSE
-MSPE
+sqrt(MSPE)
 
 # 6a
 
 # Getting means
-sMSE_means <- colMeans(sMSE)
-MSPE_means <- colMeans(MSPE)
+sMSE_means <- colMeans(sqrt(sMSE))
+MSPE_means <- colMeans(sqrt(MSPE))
 
 # Getting CIs
-lower_ci_sMSE <- sMSE_means - 1.96*(apply(sMSE, 2, function(x){return(sd(x))})/sqrt(20))
-upper_ci_sMSE <- sMSE_means + 1.96*(apply(sMSE, 2, function(x){return(sd(x))})/sqrt(20))
-lower_ci_MSPE <- MSPE_means - 1.96*(apply(MSPE, 2, function(x){return(sd(x))})/sqrt(20))
-upper_ci_MSPE <- MSPE_means + 1.96*(apply(MSPE, 2, function(x){return(sd(x))})/sqrt(20))
+lower_ci_sMSE <- sMSE_means - 1.96*(apply(sqrt(sMSE), 2, function(x){return(sd(x))})/sqrt(20))
+upper_ci_sMSE <- sMSE_means + 1.96*(apply(sqrt(sMSE), 2, function(x){return(sd(x))})/sqrt(20))
+lower_ci_MSPE <- MSPE_means - 1.96*(apply(sqrt(MSPE), 2, function(x){return(sd(x))})/sqrt(20))
+upper_ci_MSPE <- MSPE_means + 1.96*(apply(sqrt(MSPE), 2, function(x){return(sd(x))})/sqrt(20))
 
 # Putting on to table
 q6_a <- data.frame(Model = c("OLS", "Allsub/BIC", "LASSO_min", "LASSO_1se", "LASSO_Relax"),
